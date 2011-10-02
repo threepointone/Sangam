@@ -4,7 +4,7 @@
 	"version"		: "0.0.1",
 	"homepage"      : "http://github.com/threepointone/Sangam",
 	"author"        : "Sunil Pai <threepointone@gmail.com>",
-	"repository"    : {"type": "git", "url": "git://github.com/threepointone/sangam.git"},
+	"repository"    : {"type": "git", "url": "git://github.com/threepointone/Sangam.git"},
 	"main"			: "sangam.js",
 	"dependencies": {
 		"underscore"	: ">= 1.1.7",
