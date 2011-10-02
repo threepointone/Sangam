@@ -171,8 +171,11 @@ var Package = Events.extend({
 				//TODO make sure they get put in the right order, dammit.
 				//TODO - handle partials? 
 				
-				_templates[self.name + '/' + path.dirname(f) + '/' + path.basename(f)] = text;		//simple template namespacing
+				// _templates[self.name + '/' + path.dirname(f) + '/' + path.basename(f)] = text;		//simple template namespacing
+				_templates[path.join(self.name, path.basename(f, ext))] = text;		//simple template namespacing
+				
 				finish();
+				
 			}
 			else if(self.isScript(f)){
 				(convert.to.js[ext]||convert.identity)(text,f, function(js){
