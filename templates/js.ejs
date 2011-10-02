@@ -1,0 +1,78 @@
+<% if (locals.script && locals.script.length>0) { %>
+	<%- script %>
+<% } %>
+
+
+
+<% if (locals.css && locals.css.length>0 ) { %>
+
+(function () {
+
+
+    var isIE = function getInternetExplorerVersion() {
+	var rv = -1; // Return value assumes failure.
+		if (navigator.appName == 'Microsoft Internet Explorer') {
+			var ua = navigator.userAgent;
+			var re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+			if (re.exec(ua) != null) rv = parseFloat(RegExp.$1);
+		}
+		return rv;
+	}
+
+    //ripped from fb connect js
+
+    var _cssRules = {}
+
+    function addCssRules(styles, names) {
+
+        //#JSCOVERAGE_IF
+        if (isIE() == -1) {
+            var style = document.createElement('style');
+            style.type = 'text/css';
+            style.textContent = styles;
+            document.getElementsByTagName('HEAD')[0].appendChild(style);
+        } else {
+            try {
+                document.createStyleSheet().cssText = styles;
+            } catch (exc) {
+                // major problem on IE : You can only create 31 stylesheet objects with
+                // this method. We will have to add the styles into an existing
+                // stylesheet.
+                if (document.styleSheets[0]) {
+                    document.styleSheets[0].cssText += styles;
+                }
+            }
+        }
+    }
+
+
+    addCssRules(<%- JSON.stringify(locals.css) %>);
+
+})();
+
+	
+<% } %>
+
+
+<% 
+function isEmpty(ob){
+   for(var i in ob){ return false;}
+  return true;
+}
+
+if (!isEmpty(templates)) { %>
+	
+(function(){
+	//assume underscore templates (for now?)
+	
+	window.JST = window.JST || {};
+	<% for (tpl in locals.templates) {%>
+		window.JST["<%= tpl %>"] = _.template(<%- JSON.stringify(locals.templates[tpl]) %>);
+		
+	<% } %>
+})();
+
+<% } %>
+
+
+

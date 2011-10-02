@@ -1,0 +1,19 @@
+{
+	"name"			: "sangam",
+	"description"   : "Asset packaging - js, css, images, templates",
+	"version"		: "0.0.1",
+	"homepage"      : "http://github.com/threepointone/Sangam",
+	"author"        : "Sunil Pai <threepointone@gmail.com>",
+	"repository"    : {"type": "git", "url": "git://github.com/threepointone/sangam.git"},
+	"main"			: "sangam.js",
+	"dependencies": {
+		"underscore"	: ">= 1.1.7",
+		"ejs"			: ">=0.4.3",
+		"less"			: ">=1.1.4",
+		"watch"			: ">=0.3.3",
+		"uglify-js"		: ">=1.1.0",
+		"coffee-script"	: ">=1.1.2",
+		"cssmin"		: ">=0.3.0"
+	}
+
+}
