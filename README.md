@@ -90,6 +90,7 @@ TODO list
 - make sure target folders [assets]/img /js /css exist before pumping out files to them
 - use node's eventemitter(2?) class, and give more proper hooks into the process
 - view helpers for expressjs
+- function to cleanup all previous assets
 
 
 

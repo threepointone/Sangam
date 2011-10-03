@@ -43,11 +43,6 @@ var  convert = {
 			'.coffee':function(str, p, callback){
 				callback = callback||_.identity;
 				callback(coffee.compile(str));
-			},
-			'.py':function(str, p, callback){
-				//TODO
-				callback = callback||_.identity;
-				callback(str);
 			}
 		},
 		css:{
@@ -127,6 +122,8 @@ var Package = Events.extend({
 					
 					//get all images in the file 
 					
+					//todo break up the stuff in this block and make separate functions
+					
 					var regex = /url\(['"]?([^\s)]+\.[a-z]+)(\?\d+)?['"]?\)/img;  //via jammit.
 					var indexes = [];
 					var match;
@@ -170,8 +167,7 @@ var Package = Events.extend({
 			else if(self.isTemplate(f)){
 				//TODO make sure they get put in the right order, dammit.
 				//TODO - handle partials? 
-				
-				// _templates[self.name + '/' + path.dirname(f) + '/' + path.basename(f)] = text;		//simple template namespacing
+
 				_templates[path.join(self.name, path.basename(f, ext))] = text;		//simple template namespacing
 				
 				finish();
@@ -339,20 +335,26 @@ Package.CSS = Package.extend({
 		this.extension = '.css';
 	},
 
-	lint:function(){},
+	lint:function(){
+
+		return this;
+	},
 	embed:function(){		//assume css. 
 		//took care of this in the process step itself.
 		return this;
 	},
 	compress:function(){
-		//took care of this in the process step itself.
+		if(!this.config.debug && this.config.compress){
+			
+			this.result = cssmin.cssmin(this.result);
+			this.trigger('compress');
+		}
 		return this;
 	},
 	minify:function(){
-		if(!this.config.debug && this.config.compress){
-			//compress
-			this.result = cssmin.cssmin(this.result);
-			this.trigger('compress');
+		if(!this.config.debug && this.config.minify){
+			//TODO introduce minification step
+			this.trigger('minify');
 		}
 		return this;
 	}
@@ -361,13 +363,6 @@ Package.CSS = Package.extend({
 
 var Sangam = Events.extend({
 	initialize:function(config){
-		var self = this;
-		
-		
-		this.output = {    //store output spec here - generated filenames, basically. 
-			js:{}, css:{}
-		};
-
 		this.config = _.defaults(config, {
 			src:'./static/',
 			dest:'./assets/',
@@ -386,37 +381,11 @@ var Sangam = Events.extend({
 		
 		//TODO do some checking to make sure no clashes, make sure config is valid, etc 
 		
-		this.packages = {
-			js:{},css:{}
-		};
 		
 		
-		this.files = {};
+		this.make_packages();
+		this.start();
 		
-		_(['js', 'css']).each(function(type){
-			_(self.config[type]).each(function(arr, name){
-				var filepaths = _(arr).map(function(p, i){
-					var fullpath = path.join(config.src, p);
-					//maintain a reverse hash to immmediately know which packages have been affected by a file change
-					self.files[fullpath] = _.union(self.files[fullpath]||[], [type + ':' + name]);
-					return fullpath;
-				});
-
-				self.packages[type][name] = new (Package[type.toUpperCase()])(_.extend(_.clone(self.config), {
-					files:filepaths,
-					name:name
-				}));
-				
-				self.packages[type][name].bind('bundle', function(){
-					self.output_spec(this);
-				});
-
-			});
-			
-			
-			_(self.packages[type]).invoke('bundle');
-		});
-		this.watch();
 		this.trigger('start');
 		
 		
@@ -436,24 +405,60 @@ var Sangam = Events.extend({
 	},
 	
 	output_spec:function(pkg){
+		
+		if(!this.output){ 			//store output spec here - generated filenames, basically. 
+			this.output = {js:{}, css:{}};
+		}
+		
 		this.output[pkg.type][pkg.name] = pkg.filename;
 		fs.writeFileSync(path.join(this.config.dest, this.config.spec), JSON.stringify(this.output, null, '\t'));
+		
 		this.trigger('output');
+	},
+	make_packages:function(){
+		var self = this;
+		
+		this.packages = {
+			js:{},css:{}
+		};
+		
+		this.files = {};
+		
+		_(['js', 'css']).each(function(type){
+			_(self.config[type]).each(function(arr, name){
+				var filepaths = _(arr).map(function(p, i){
+					var fullpath = path.join(self.config.src, p);
+					//maintain a reverse hash to immmediately know which packages have been affected by a file change
+					self.files[fullpath] = _.union(self.files[fullpath]||[], [type + ':' + name]);
+					return fullpath;
+				});
+
+				self.packages[type][name] = new (Package[type.toUpperCase()])(_.extend(_.clone(self.config), {
+					files:filepaths,
+					name:name
+				}));
+				
+				self.packages[type][name].bind('bundle', function(){
+					self.output_spec(this);
+				});
+
+			});
+			
+			
+			_(self.packages[type]).invoke('bundle');
+		});
 	},
 	start:function(){
 		
 		//start watching
+		this.watch();
+		
 		this.trigger('start');
 		
 	},
 	stop:function(){		//possibly destroy self after this   HAHAHAHAHA destroy self
 		this.trigger('stop');
-	},
-	pause:function(){
-		
-		this.trigger('pause');
-	}
-	
+	}	
 });
 
 
