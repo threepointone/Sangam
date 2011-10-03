@@ -93,6 +93,6 @@ TODO list
 - function to cleanup all previous assets
 - support for deploying to aws, etc. 
 - go asynchronous on everything; that way you can process multiple packages synchronously
-
+- growl/notify notifications? yes!
 
 

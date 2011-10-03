@@ -466,7 +466,7 @@ var Sangam = Events.extend({
 	},
 	get:function(name, tags){
 		//return package by type, name, or type:name. returns an array.
-		//optionally pass in true or false for tags to automatically get the tags for the given packages. 
+		//optionally pass in true or false for tags to automatically get the tags for the given packages.
 	}
 });
 
