@@ -91,7 +91,7 @@ TODO list
 - use node's eventemitter(2?) class, and give more proper hooks into the process
 - view helpers for expressjs
 - function to cleanup all previous assets
-
+- support for deploying to aws, etc. 
 
 
 
