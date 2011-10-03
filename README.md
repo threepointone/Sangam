@@ -92,6 +92,7 @@ TODO list
 - view helpers for expressjs
 - function to cleanup all previous assets
 - support for deploying to aws, etc. 
+- go asynchronous on everything; that way you can process multiple packages synchronously
 
 
 

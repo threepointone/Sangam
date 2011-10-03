@@ -84,7 +84,7 @@ var Package = Events.extend({
 			gzip:false,
 			spritify:false,
 			debug:true,
-			write:true	//send write == false if all you want is to get the result via pkg.result after whichever evt in the step is triggered
+			write:true	//experimental - send write == false if all you want is to get the result via pkg.result after whichever evt in the step is triggered
 		});
 		
 		this.name = this.config.name;
@@ -285,6 +285,11 @@ var Package = Events.extend({
 	isScript:function(p){
 		return(['.js', '.coffee'].indexOf(path.extname(p))>-1);
 
+	},
+	tag:function(){
+		//TODO generate tags to be used in html
+		//please override in package type
+		
 	}
 });
 
@@ -456,9 +461,13 @@ var Sangam = Events.extend({
 		this.trigger('start');
 		
 	},
-	stop:function(){		//possibly destroy self after this   HAHAHAHAHA destroy self
+	stop:function(){		//TODO
 		this.trigger('stop');
-	}	
+	},
+	get:function(name, tags){
+		//return package by type, name, or type:name. returns an array.
+		//optionally pass in true or false for tags to automatically get the tags for the given packages. 
+	}
 });
 
 
