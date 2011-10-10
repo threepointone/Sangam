@@ -202,7 +202,7 @@ var Package = Events.extend({
 		//convert all files to native form here and get a string.
 		
 	},
-	steps:[ 'lint', 'embed', 'spritify', 'compress', 'minify', 'write', 'gzip'],
+	steps:[ 'lint', 'spritify', 'embed', 'compress', 'minify', 'write', 'gzip'],
 	bundle:function(fn){
 		
 		//basically write to files, and trigger an output json with details. 
